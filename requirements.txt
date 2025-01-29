@@ -1,2 +1,7 @@
+# api
 fastapi[standard]
 pydantic
+python-dotenv
+
+# ml
+google-generativeai
