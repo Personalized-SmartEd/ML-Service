@@ -1,0 +1,1 @@
+# would contain the vecorized data of all the classes and their books from 6th to 8th grade

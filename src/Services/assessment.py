@@ -1,9 +1,10 @@
+from typing import List
 from fastapi import HTTPException
 from pydantic import BaseModel
 from requests import HTTPError
 
 from src.LLMs.gemini_integration import GeminiClient
-from src.Models.learning_style import LearningStyleResult, LearningStyleType
+from src.Models.assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel
 from src.Models.quiz import QuizResponseModel, QuizSubmission
 
 
@@ -113,4 +114,33 @@ class InitialAssessmentService:
         return LearningStyleResult(
             style=dominant_style,
             description=explanation
+        )
+    
+
+
+class DynamicAssessmentService:
+    def calculate_performance(self,subject: str, scores: List[int]) -> AssessmentResult:
+        """Calculate performance metrics based on historical scores"""
+        average = sum(scores) / len(scores)
+        
+        # Determine performance level
+        if average < 50:
+            level = PerformanceLevel.BEGINNER
+        elif 50 <= average < 75:
+            level = PerformanceLevel.INTERMEDIATE
+        else:
+            level = PerformanceLevel.ADVANCED
+
+        # Calculate trend (simple linear regression)
+        trend = "stable"
+        if len(scores) >= 2:
+            first_half = sum(scores[:len(scores)//2]) / (len(scores)//2)
+            second_half = sum(scores[len(scores)//2:]) / (len(scores)//2)
+            trend = "improving" if second_half > first_half else "declining" if second_half < first_half else "stable"
+
+        return AssessmentResult(
+            subject=subject,
+            performance_level=level,
+            average_score=round(average, 2),
+            trend=trend
         )
