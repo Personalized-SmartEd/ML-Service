@@ -91,7 +91,8 @@ class InitialAssessmentService:
         }
         answers = submission.responses
         if len(answers) != 15:
-            raise HTTPException(status_code=409, detail="Give 15 responses bitch.")
+            print(answers, len(answers))
+            raise HTTPException(status_code=409, detail="Give 15 unique-responses bitch.")
 
         for response_index in answers.values():
             # Direct mapping based on option order: 0=Visual, 1=Auditory, etc.
