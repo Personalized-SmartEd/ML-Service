@@ -9,6 +9,6 @@ router = APIRouter(
 )
 
 @router.post("/session", response_model=TutorSessionResponse)
-async def get_quiz(request: TutorSessionRequest):
+async def get_tutor_session(request: TutorSessionRequest):
     return await TutorBotService().generate_tutor_response(request)
 
