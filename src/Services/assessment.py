@@ -102,6 +102,8 @@ class InitialAssessmentService:
             raise HTTPException(status_code=409, detail="Give 15 responses bitch.")
 
         for response_index in answers:
+            if response_index > 3:
+                raise HTTPException(status_code=300, detail='Options should be between 0 to 3')
             # Direct mapping based on option order: 0=Visual, 1=Auditory, etc.
             style = [
                 LearningStyleType.VISUAL,
