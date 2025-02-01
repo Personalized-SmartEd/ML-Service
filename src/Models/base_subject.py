@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from Models.static_assessment import SubjectType
+from src.Models.static_assessment import SubjectType
 
 class Subject(BaseModel):
     subject: SubjectType

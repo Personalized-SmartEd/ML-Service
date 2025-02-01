@@ -1,6 +1,6 @@
 from src.Models.tutor_bot import TutorSessionRequest, TutorSessionResponse
 from src.LLMs.gemini_integration import GeminiClient
-from Models.static_assessment import SubjectType
+from src.Models.static_assessment import SubjectType
 from typing import Optional
 
 class TutorBotService:
