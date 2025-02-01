@@ -50,8 +50,9 @@ HERE:
     1. POST /api/tutor/session
     req : { topic-info, student-info, {complete-chat}}
     res : { explanation, {updated complete-chat}}
+</br>
 
-## 5. Recommendation engine
+## 5. Doubt solving bot
 
+## 6. Recommendation engine
 
-## 6. Doubt solving bot
