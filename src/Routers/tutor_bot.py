@@ -7,8 +7,9 @@ router = APIRouter(
     prefix="/tutor",
     tags=["Tutor Bot"]
 )
+service = TutorBotService()
 
 @router.post("/session", response_model=TutorSessionResponse)
 async def get_tutor_session(request: TutorSessionRequest):
-    return await TutorBotService().generate_tutor_response(request)
+    return await service.generate_tutor_response(request)
 

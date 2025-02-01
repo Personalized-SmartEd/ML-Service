@@ -41,8 +41,8 @@ class TutorBotService:
         """Build context-aware prompt for tutoring session"""
         return f"""
         Act as an expert tutor for {request.subject.subject.value}. The student is in class {request.student.student_class} 
-        with {request.student.student_performance}% average performance. Learning style: {request.student.student_learning_style}, 
-        preferred pace: {request.student.student_pace}.
+        with {request.student.student_performance_from_1_to_100}% average performance. Learning style: {request.student.student_learning_style}, 
+        preferred pace: {request.student.student_performance_level}.
 
         Current chapter: {request.subject.chapter}
         Topic: {request.subject.topic_description}
@@ -77,7 +77,7 @@ class TutorBotService:
         # Add tutor response
         updated_history.append({
             "content": response['explanation'],
-            "sender": "tutor",
+            "sender": "tutor-bot",
             "metadata": {
                 "key_points": response.get('key_points', []),
                 "follow_up_question": response.get('follow_up_question')

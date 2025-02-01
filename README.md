@@ -44,17 +44,12 @@ HERE:
     2. student_performance_level is a enum == performance_level enum defined above
     3. subject is a enum also defined above.
 ```
+</br>
 
-
-# Remaining
 ## 4. Tutor bot
-    1. GET /api/tutor/search
-    req : { topic-info, student-info }
-    res : { study recommendation }
-
     1. POST /api/tutor/session
-    req : { topic-info, student-info, (chat-message) }
-    res : { explanation, (chat-response) }
+    req : { topic-info, student-info, {complete-chat}}
+    res : { explanation, {updated complete-chat}}
 
 ## 5. Recommendation engine
 
