@@ -1,26 +1,25 @@
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 
+from src.Models.static_assessment import SubjectType
 from src.Models.base_student import Student
 from src.Models.base_subject import Subject
 
 
 class DoubtInput(BaseModel):
-    text: Optional[str] = None
+    question: str
+    # if image doubt
     image_url: Optional[HttpUrl] = None
     image_description: Optional[str] = None
 
-class VisualAnnotation(BaseModel):
-    coordinates: List[float]  # [x1, y1, x2, y2] normalized coords
-    explanation: str
-    annotation_type: str  # "highlight", "circle", "arrow"
-
 class DoubtBotRequest(BaseModel):
-    student: Student  # Your existing Student model
+    student: Student  
     doubt: DoubtInput
-    subject: Optional[Subject] = None  # Your existing Subject model
+    subject: SubjectType
 
 class DoubtBotResponse(BaseModel):
     explanation: str
-    visual_annotations: List[VisualAnnotation] = []
     follow_up_questions: List[str] = []
+    # if image solution
+    image_url: Optional[HttpUrl] = None
+    image_description: Optional[HttpUrl] = None
