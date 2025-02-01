@@ -1,8 +1,8 @@
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
 
-from src.Models.student import Student
-from src.Models.subject import Subject
+from Models.base_student import Student
+from Models.base_subject import Subject
 
 
 class DoubtInput(BaseModel):

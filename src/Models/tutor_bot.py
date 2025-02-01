@@ -2,9 +2,12 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.Models.chat import ChatMessage
-from src.Models.student import Student
-from src.Models.subject import Subject
+from Models.base_student import Student
+from Models.base_subject import Subject
+
+class ChatMessage(BaseModel):
+    content: str
+    sender: str  # "student" or "tutor"
 
 class TutorSessionRequest(BaseModel):
     subject: Subject

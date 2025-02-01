@@ -35,7 +35,9 @@ class PastScoresModel(BaseModel):
 class SubjectType(str, enum.Enum):
     MATH = "math"
     SCIENCE = "science"
-    LITERATURE = "literature"
+    ENGLISH = 'english'
+    SST = 'social-science'
+    HINDI = 'hindi'
 
 class PastScoresModel(BaseModel):
     """Model for taking past 10 scores"""

@@ -4,8 +4,8 @@ from pydantic import BaseModel
 from requests import HTTPError
 
 from src.LLMs.gemini_integration import GeminiClient
-from src.Models.assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel
-from src.Models.quiz import QuizResponseModel, QuizSubmission, VARKQuestion
+from Models.static_assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel
+from Models.dynamic_assessment import QuizResponseModel, QuizSubmission, VARKQuestion
 
 
 

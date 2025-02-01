@@ -8,7 +8,7 @@ import logging
 import asyncio
 from dotenv import load_dotenv
 
-from src.Models.quiz import Quiz
+from Models.dynamic_assessment import Quiz
 load_dotenv('../.env')
 
 logger = logging.getLogger(__name__)

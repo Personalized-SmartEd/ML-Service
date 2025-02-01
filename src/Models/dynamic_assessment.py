@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-from src.Models.assessment import LearningStyleType
+from Models.static_assessment import LearningStyleType
 
 class QuestionSchema(BaseModel):
     """Adaptive quiz question structure"""

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from src.Models.assessment import AssessmentResult, LearningStyleResult, PastScoresModel
-from src.Models.quiz import QuizResponseModel, QuizSubmission
+from Models.static_assessment import AssessmentResult, LearningStyleResult, PastScoresModel
+from Models.dynamic_assessment import QuizResponseModel, QuizSubmission
 from src.Services.assessment import DynamicAssessmentService, InitialAssessmentService
 
 router = APIRouter(
