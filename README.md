@@ -60,4 +60,7 @@ HERE:
 </br>
 
 ## 6. Recommendation engine
+    1. POST /api/reccomedn/generate-routine
+    req : { student-profile }
+    res : { routine, resources }
 
