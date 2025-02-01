@@ -8,8 +8,9 @@ router = APIRouter(
     prefix="/quiz",
     tags=["Quiz Bot"]
 )
+service = QuizBotService()
 
 @router.post("/", response_model=QuizResponseModel)
 async def get_quiz(request: QuizRequestBody):
-    return await QuizBotService().get_quiz(request)
+    return await service.get_quiz(request)
 

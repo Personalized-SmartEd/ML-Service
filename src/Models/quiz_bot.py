@@ -1,20 +1,14 @@
 from pydantic import BaseModel
 
-from src.Models.static_assessment import SubjectType
+from src.Models.base_subject import Subject
+from src.Models.base_student import Student
 
-class QuizRequestBody(BaseModel):
-    # student - info
-    student_class: int
-    student_performance: int
-    student_learning_style: str
-    student_pace: str
-
-    # subject info
-    subject: SubjectType
-    chapter: str
-    topic_description: str
-
-    # quiz info
-    quiz_difficulty: int
+class QuizInfo(BaseModel):
+    quiz_difficulty_from_1_to_10: int
     quiz_duration_minutes: int
     number_of_questions: int
+
+class QuizRequestBody(BaseModel):
+    student_info : Student
+    subject_info : Subject
+    quiz_info : QuizInfo

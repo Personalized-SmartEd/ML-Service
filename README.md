@@ -18,8 +18,7 @@ API endpoints for ML Service.
 HERE:
     1. Study_type is a enum : {'visual' , 'auditory', 'reading_writing', 'kinesthetic'}
 ```
-
-    
+</br>
 
 ## 2. Adaptive Assessment Model -> LSTM( Time series data )
     1. GET /api/assessments/dynamic
@@ -33,14 +32,22 @@ HERE:
     3. Average score is a float showing model predicted value.
     4. Trend is a enum : {'stable', 'improving', 'declining'}
 ```
+</br>
 
-## 4. Quiz bot
+## 3. Quiz bot
     1. GET /api/quiz/
-    req : { topic-info, student-info }
-    res : { Quiz-questions , quiz-answers }
+    req : { student_info, subject_info, quiz_info }
+    res : { question_numbers, quiz_questions with answers }
+```
+HERE: 
+    1. student_learning_style is a enum == study_type enum defined above.
+    2. student_performance_level is a enum == performance_level enum defined above
+    3. subject is a enum also defined above.
+```
 
 
-## 3. Tutor bot
+# Remaining
+## 4. Tutor bot
     1. GET /api/tutor/search
     req : { topic-info, student-info }
     res : { study recommendation }
@@ -49,12 +56,6 @@ HERE:
     req : { topic-info, student-info, (chat-message) }
     res : { explanation, (chat-response) }
 
-
-
-
-
-
-# Todo
 ## 5. Recommendation engine
 
 

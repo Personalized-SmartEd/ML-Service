@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 
 from src.Models.static_assessment import LearningStyleType
@@ -81,7 +81,15 @@ class VARKQuestion(BaseModel):
     question:str
     options:List[str]
 
+class QuizQuestion(BaseModel):
+    qid : int
+    question : str
+    options : List[str]
+    correct_option : int
+    answer: str
+    explanation: str
+
 class QuizResponseModel(BaseModel):
     """Generated quiz response"""
     question_count: int
-    questions: List[VARKQuestion]
+    questions: Union[List[VARKQuestion], List[QuizQuestion]]
