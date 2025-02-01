@@ -1,8 +1,9 @@
 from enum import Enum
 import os
 from typing import Dict, List
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
+from src.Models.base_student import Pace
 from src.Models.static_assessment import LearningStyleType, PerformanceLevel
 
 
@@ -43,10 +44,10 @@ class StudentProfile(BaseModel):
     current_level: PerformanceLevel
     weak_areas: List[str] = Field(..., min_items=1, max_items=5)
     performance_history: List[float] = Field(..., min_items=1)
-    preferred_pace:     
+    preferred_pace:  Pace
     available_hours: int = Field(..., gt=0, le=168)
 
-    @validator('performance_history')
+    @field_validator('performance_history')
     def validate_performance_scores(cls, v):
         if not all(0 <= score <= 100 for score in v):
             raise ValueError("Performance scores must be between 0 and 100")

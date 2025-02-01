@@ -1,5 +1,13 @@
 
+import asyncio
+import json
+import logging
+from typing import Dict, List
 
+from groq import Groq
+from src.Models.static_assessment import LearningStyleType
+from src.Models.base_student import Pace
+from src.Models.recommendation_engine import ResourceFormat, StudentProfile, StudyPlanRecommendation
 from src.LLMs.deepseek_integration import GroqConfiguration
 
 
@@ -7,7 +15,6 @@ class GroqRecommendationEngine:
     def __init__(self, config: GroqConfiguration):
         self.client = Groq(api_key=config.api_key)
         self.model_name = config.model_name
-        self.logger = logging.getLogger(__name__)
 
     async def generate_recommendations(self, profile: StudentProfile) -> StudyPlanRecommendation:
         try:
@@ -15,7 +22,7 @@ class GroqRecommendationEngine:
             response = await asyncio.to_thread(self._query_groq, prompt)
             return self._parse_response(response)
         except Exception as e:
-            self.logger.error(f"Error generating recommendations: {str(e)}")
+            print(f"Error generating recommendations: {str(e)}")
             raise
 
     def _create_prompt(self, profile: StudentProfile) -> str:
@@ -77,26 +84,26 @@ class GroqRecommendationEngine:
             # Calculate study duration based on pace
             base_duration = 4.0 if is_weekend else 2.5
             pace_multiplier = {
-                StudyPace.SLOW: 0.8,
-                StudyPace.MODERATE: 1.0,
-                StudyPace.FAST: 1.2
+                Pace.SLOW: 0.8,
+                Pace.MODERATE: 1.0,
+                Pace.FAST: 1.2
             }[profile.preferred_pace]
 
             # Get style-specific activities
             style_activities = {
-                LearningStyle.VISUAL: [
+                LearningStyleType.VISUAL: [
                     "Watch educational videos",
                     "Create mind maps",
                     "Study with diagrams",
                     "Use flashcards"
                 ],
-                LearningStyle.AUDITORY: [
+                LearningStyleType.AUDITORY: [
                     "Listen to educational content",
                     "Group discussions",
                     "Verbal practice",
                     "Record and playback"
                 ],
-                LearningStyle.KINESTHETIC: [
+                LearningStyleType.KINESTHETIC: [
                     "Hands-on experiments",
                     "Practice problems",
                     "Interactive exercises",
@@ -159,32 +166,32 @@ class GroqRecommendationEngine:
             return StudyPlanRecommendation.parse_raw(response)
         except Exception as e:
             error_details = "\n".join([f"{err['loc']}: {err['msg']}" for err in e.errors()])
-            self.logger.error(f"Response validation failed:\n{error_details}")
+            print(f"Response validation failed:\n{error_details}")
             raise ValueError(f"Invalid response format:\n{error_details}")
 
-    def _get_activities_for_style(self, style: LearningStyle) -> List[str]:
+    def _get_activities_for_style(self, style: LearningStyleType) -> List[str]:
         activities = {
-            LearningStyle.VISUAL: ["Video tutorials", "Diagram analysis", "Mind mapping"],
-            LearningStyle.AUDITORY: ["Audio lectures", "Group discussions", "Verbal exercises"],
-            LearningStyle.KINESTHETIC: ["Hands-on practice", "Interactive simulations", "Lab work"]
+            LearningStyleType.VISUAL: ["Video tutorials", "Diagram analysis", "Mind mapping"],
+            LearningStyleType.AUDITORY: ["Audio lectures", "Group discussions", "Verbal exercises"],
+            LearningStyleType.KINESTHETIC: ["Hands-on practice", "Interactive simulations", "Lab work"]
         }
         return activities.get(style, ["General practice", "Review exercises"])
 
     def _get_default_resources(self, profile: StudentProfile) -> List[dict]:
         resource_config = {
-            LearningStyle.VISUAL: {
+            LearningStyleType.VISUAL: {
                 "source": "Khan Academy",
                 "base_url": "https://www.khanacademy.org",
                 "format": ResourceFormat.VIDEO,
                 "type": "Video Tutorial"
             },
-            LearningStyle.AUDITORY: {
+            LearningStyleType.AUDITORY: {
                 "source": "Coursera Audio",
                 "base_url": "https://www.coursera.org",
                 "format": ResourceFormat.AUDIO,
                 "type": "Audio Lecture"
             },
-            LearningStyle.KINESTHETIC: {
+            LearningStyleType.KINESTHETIC: {
                 "source": "Brilliant Interactive",
                 "base_url": "https://www.brilliant.org",
                 "format": ResourceFormat.WEB,
@@ -211,9 +218,9 @@ class GroqRecommendationEngine:
     def _calculate_expected_improvement(self, profile: StudentProfile) -> float:
         avg_performance = sum(profile.performance_history) / len(profile.performance_history)
         improvement_factors = {
-            StudyPace.SLOW: 1.05,
-            StudyPace.MODERATE: 1.10,
-            StudyPace.FAST: 1.15
+            Pace.SLOW: 1.05,
+            Pace.MODERATE: 1.10,
+            Pace.FAST: 1.15
         }
         return min(100.0, avg_performance * improvement_factors[profile.preferred_pace])
 
@@ -227,5 +234,5 @@ class GroqRecommendationEngine:
             )
             return completion.choices[0].message.content
         except Exception as e:
-            self.logger.error(f"Groq API error: {str(e)}")
+            print(f"Groq API error: {str(e)}")
             raise
