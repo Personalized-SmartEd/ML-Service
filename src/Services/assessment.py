@@ -5,7 +5,7 @@ from requests import HTTPError
 
 from src.LLMs.gemini_integration import GeminiClient
 from src.Models.assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel
-from src.Models.quiz import QuizResponseModel, QuizSubmission
+from src.Models.quiz import QuizResponseModel, QuizSubmission, VARKQuestion
 
 
 
@@ -80,7 +80,13 @@ class InitialAssessmentService:
                     }
                 )
 
-                return QuizResponseModel(question_count=len(questions['items']), questions=questions['items'])
+                # creating valid response object for returning the quiz
+                vark_questions = []
+                id = 1
+                for item in questions['items']:
+                    vark_questions.append(VARKQuestion(qid=id, question=item['question'][0], options=item['options']))
+                    id += 1
+                return QuizResponseModel(question_count=len(questions['items']), questions=vark_questions)
 
     async def process_results(self, submission: QuizSubmission) -> LearningStyleResult:
         """Calculate and store learning style"""
@@ -95,7 +101,7 @@ class InitialAssessmentService:
             print(answers, len(answers))
             raise HTTPException(status_code=409, detail="Give 15 unique-responses bitch.")
 
-        for response_index in answers.values():
+        for response_index in answers:
             # Direct mapping based on option order: 0=Visual, 1=Auditory, etc.
             style = [
                 LearningStyleType.VISUAL,

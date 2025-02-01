@@ -12,7 +12,7 @@ class QuestionSchema(BaseModel):
 
 class QuizSubmission(BaseModel):
     """User answers in {question_id: response_index} format"""
-    responses: dict[str, int]  # {"1": 0, "2": 3, ...}
+    responses: list[int]  # {"1": 0, "2": 3, ...}
 
 class LearningStyleResult(BaseModel):
     """VARK assessment outcome"""
@@ -76,8 +76,12 @@ class Quiz(BaseModel):
             }
         }
 
+class VARKQuestion(BaseModel):
+    qid : int
+    question:str
+    options:List[str]
 
 class QuizResponseModel(BaseModel):
     """Generated quiz response"""
     question_count: int
-    questions: List
+    questions: List[VARKQuestion]
