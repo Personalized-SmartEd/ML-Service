@@ -53,6 +53,11 @@ HERE:
 </br>
 
 ## 5. Doubt solving bot
+    1. POST /api/doubt/ask
+    req : { student-info, doubt(text needed, image and its description is optional), subject(enum) }
+    res : { explanation, image?, follow_up_questions }
+
+</br>
 
 ## 6. Recommendation engine
 
