@@ -30,6 +30,10 @@ HERE:
     4. Trend is a enum : {'stable', 'improving', 'declining'}
 ```
 
+## 4. Quiz bot
+    1. GET /api/quiz/
+    req : { topic-info, student-info }
+    res : { Quiz-questions , quiz-answers }
 
 
 ## 3. Tutor bot
@@ -42,10 +46,6 @@ HERE:
     res : { explanation, (chat-response) }
 
 
-## 4. Quiz bot
-    1. GET /api/quizzes/generate
-    req : { topic-info, student-info }
-    res : { Quiz-questions , quiz-answers }
 
 
 
