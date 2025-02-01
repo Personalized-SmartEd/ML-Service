@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from requests import HTTPError
 
 from src.LLMs.gemini_integration import GeminiClient
-from src.Models.static_assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel
+from src.Models.static_assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PerformanceLevel, Trend
 from src.Models.dynamic_assessment import QuizResponseModel, QuizSubmission, VARKQuestion
 
 
@@ -140,11 +140,11 @@ class DynamicAssessmentService:
             level = PerformanceLevel.ADVANCED
 
         # Calculate trend (simple linear regression)
-        trend = "stable"
+        trend = Trend.STABLE
         if len(scores) >= 2:
             first_half = sum(scores[:len(scores)//2]) / (len(scores)//2)
             second_half = sum(scores[len(scores)//2:]) / (len(scores)//2)
-            trend = "improving" if second_half > first_half else "declining" if second_half < first_half else "stable"
+            trend = Trend.IMPROVING if second_half > first_half else Trend.DECLINING if second_half < first_half else Trend.STABLE
 
         return AssessmentResult(
             subject=subject,

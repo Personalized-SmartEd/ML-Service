@@ -8,6 +8,10 @@ class LearningStyleType(str, enum.Enum):
     READING_WRITING = "reading_writing"
     KINESTHETIC = "kinesthetic"
 
+class Trend(str, enum.Enum):
+    STABLE = 'stable'
+    IMPROVING = 'improving'
+    DECLINING = 'declining'
 
 class LearningStyleResult(BaseModel):
     """VARK assessment outcome"""
@@ -44,4 +48,4 @@ class AssessmentResult(BaseModel):
     subject: SubjectType
     performance_level: PerformanceLevel
     average_score: float
-    trend: str
+    trend: Trend
