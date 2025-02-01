@@ -14,6 +14,10 @@ API endpoints for ML Service.
     req : { Expects a integer-list of 15 responses with answer options between 0-3 }
     res : { Study-type , Description }
 
+```
+HERE:
+    1. Study_type is a enum : {'visual' , 'auditory', 'reading_writing', 'kinesthetic'}
+```
 
     
 
