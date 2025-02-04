@@ -8,7 +8,7 @@ async def health_check():
     return {"status": "healthy"}
 
 app.include_router(assessment.router)
-app.include_router(quiz_bot.router)
 app.include_router(tutor_bot.router)
+app.include_router(quiz_bot.router)
 app.include_router(doubt_bot.router)
 app.include_router(recommend.router)

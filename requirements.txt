@@ -6,3 +6,9 @@ python-dotenv
 # ml
 google-generativeai
 groq
+
+# vector db
+langchain_community
+langchain_text_splitters
+chromadb
+pypdf

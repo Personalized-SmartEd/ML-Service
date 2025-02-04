@@ -6,18 +6,7 @@ from typing import Optional
 class TutorBotService:
     def __init__(self):
         self.tutor_bot = GeminiClient()
-        self.response_schema = {
-            "type": "object",
-            "properties": {
-                "explanation": {"type": "string"},
-                "key_points": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                },
-                "follow_up_question": {"type": "string"}
-            },
-            "required": ["explanation"]
-        }
+        
 
     async def generate_tutor_response(self, request: TutorSessionRequest) -> TutorSessionResponse:
         # Construct the prompt with full context
