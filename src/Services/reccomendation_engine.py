@@ -4,12 +4,29 @@ import json
 import logging
 from typing import Dict, List
 
+from fastapi import HTTPException
 from groq import Groq
 from src.Models.static_assessment import LearningStyleType
 from src.Models.base_student import Pace
 from src.Models.recommendation_engine import ResourceFormat, StudentProfile, StudyPlanRecommendation
-from src.LLMs.deepseek_integration import GroqConfiguration
+from src.LLMs.deepseek_integration import GroqConfiguration, get_groq_config
 
+# wrapper for the below defined class
+class RecommendationEngineService:
+    def __init__(self):
+        self.groq_config = get_groq_config()
+        
+    async def weekly_recommendation(self, profile: StudentProfile) -> StudyPlanRecommendation:
+        try:
+            engine = GroqRecommendationEngine(config=self.groq_config)
+            plan = await engine.generate_recommendations(profile)
+            return plan
+        except ValueError as e:
+            print(e)
+            raise HTTPException(status_code=400, detail=str(e))
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=500, detail="Failed to generate study plan")
 
 class GroqRecommendationEngine:
     def __init__(self, config: GroqConfiguration):
