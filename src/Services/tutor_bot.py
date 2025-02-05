@@ -1,14 +1,34 @@
+import chromadb
 from src.Models.tutor_bot import TutorSessionRequest, TutorSessionResponse
 from src.LLMs.gemini_integration import GeminiClient
 from src.Models.static_assessment import SubjectType
 from typing import Optional
 
+CHROMA_DB_PATH = '/home/gagan/Desktop/resume-projects/SmartEd/ML Service/data' # TODO: resolve to remove isssues during deployment
+
 class TutorBotService:
     def __init__(self):
         self.tutor_bot = GeminiClient()
+        self.response_schema = {
+            "type": "object",
+            "properties": {
+                "explanation": {"type": "string"},
+                "key_points": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "follow_up_question": {"type": "string"}
+            },
+            "required": ["explanation"]
+        }
+        self.chroma_client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
+        self.docs = ''
         
 
     async def generate_tutor_response(self, request: TutorSessionRequest) -> TutorSessionResponse:
+        # extract relevant docs from the vector db
+        self.load_docs(student_class=request.student.student_class, student_subject=request.subject.subject.value, query=request.new_message)
+
         # Construct the prompt with full context
         prompt = self._construct_prompt(request)
         
@@ -27,6 +47,7 @@ class TutorBotService:
         )
 
     def _construct_prompt(self, request: TutorSessionRequest) -> str:
+        print('Docs before generating prompt : ',self.docs)
         """Build context-aware prompt for tutoring session"""
         return f"""
         Act as an expert tutor for {request.subject.subject.value}. The student is in class {request.student.student_class} 
@@ -38,6 +59,7 @@ class TutorBotService:
 
         Conversation history:
         {self._format_chat_history(request.chat_history)}
+        Context: {self.docs}
 
         New student message: {request.new_message}
 
@@ -45,6 +67,8 @@ class TutorBotService:
         1. Clear explanation addressing the student's query
         2. 2-3 key points to reinforce understanding
         3. A thoughtful follow-up question to check comprehension
+
+        MUST FOLLOW: Try to generate a response related to the following context.
         """
 
     def _format_chat_history(self, history: list) -> str:
@@ -74,3 +98,17 @@ class TutorBotService:
         })
         
         return updated_history
+
+    def get_available_classes_subjects(self):
+        return self.chroma_client.list_collections()
+
+    def load_docs(self, student_class:int, student_subject:str, query: str):
+        book_name = 'Class-'+str(student_class) + '_'+student_subject
+        book = self.chroma_client.get_collection(name=book_name)
+        # print("DEBUg : ", book.peek())
+        self.docs = book.query(query_texts=[query], n_results=3)
+
+
+
+
+
