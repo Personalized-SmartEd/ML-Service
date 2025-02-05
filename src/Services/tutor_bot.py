@@ -1,10 +1,12 @@
 import chromadb
+from fastapi import HTTPException
 from src.Models.tutor_bot import TutorSessionRequest, TutorSessionResponse
 from src.LLMs.gemini_integration import GeminiClient
 from src.Models.static_assessment import SubjectType
 from typing import Optional
+import os
 
-CHROMA_DB_PATH = '/home/gagan/Desktop/resume-projects/SmartEd/ML Service/data' # TODO: resolve to remove isssues during deployment
+CHROMA_DB_PATH = './tmp/data'
 
 class TutorBotService:
     def __init__(self):
@@ -103,6 +105,9 @@ class TutorBotService:
         return self.chroma_client.list_collections()
 
     def load_docs(self, student_class:int, student_subject:str, query: str):
+        if student_class  < 6 or 8 < student_class:
+            raise HTTPException(status_code=303, detail='Can only handle class between 6 to 8')
+        # print('DEBUG : ',os.listdir(path=CHROMA_DB_PATH), self.chroma_client.list_collections())
         book_name = 'Class-'+str(student_class) + '_'+student_subject
         book = self.chroma_client.get_collection(name=book_name)
         self.docs = book.query(query_texts=[query], n_results=3)
