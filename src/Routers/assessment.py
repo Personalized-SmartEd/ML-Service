@@ -11,7 +11,6 @@ router = APIRouter(
 static_service = InitialAssessmentService() 
 dynamic_service = DynamicAssessmentService()
 
-# Routes
 @router.get("/static", response_model=QuizResponseModel)
 async def get_initial_quiz():
     return await static_service.generate_initial_quiz()
@@ -22,4 +21,4 @@ async def get_initial_results(responses: QuizSubmission):
 
 @router.post("/dynamic", response_model=AssessmentResult)
 async def get_dynamic_assessment(scores_data: PastScoresModel):
-    return  dynamic_service.calculate_performance(scores_data.subject, scores_data.scores)
+    return  dynamic_service.calculate_performance(scores_data)
