@@ -47,7 +47,7 @@ class TutorBotService:
         )
 
     def _construct_prompt(self, request: TutorSessionRequest) -> str:
-        print('Docs before generating prompt : ',self.docs)
+        # print('Docs before generating prompt : ',self.docs)
         """Build context-aware prompt for tutoring session"""
         return f"""
         Act as an expert tutor for {request.subject.subject.value}. The student is in class {request.student.student_class} 
@@ -105,7 +105,6 @@ class TutorBotService:
     def load_docs(self, student_class:int, student_subject:str, query: str):
         book_name = 'Class-'+str(student_class) + '_'+student_subject
         book = self.chroma_client.get_collection(name=book_name)
-        # print("DEBUg : ", book.peek())
         self.docs = book.query(query_texts=[query], n_results=3)
 
 
