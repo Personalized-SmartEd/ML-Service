@@ -4,4 +4,5 @@ __pycache__
 .env
 
 # no need to look at the pdf
-docs
+# docs 
+# ps : docs are needed now
