@@ -9,12 +9,12 @@ from groq import Groq
 from src.Models.static_assessment import LearningStyleType
 from src.Models.base_student import Pace
 from src.Models.recommendation_engine import ResourceFormat, StudentProfile, StudyPlanRecommendation
-from src.LLMs.deepseek_integration import GroqConfiguration, get_groq_config
+from src.LLMs.deepseek_integration import GroqConfiguration
 
 # wrapper for the below defined class
 class RecommendationEngineService:
     def __init__(self):
-        self.groq_config = get_groq_config()
+        self.groq_config = GroqConfiguration()
         
     async def weekly_recommendation(self, profile: StudentProfile) -> StudyPlanRecommendation:
         try:

@@ -9,5 +9,5 @@ class GroqConfiguration:
         if not self.api_key:
             raise ValueError("GROQ_API_KEY environment variable is required")
         
-def get_groq_config() -> GroqConfiguration:
-    return GroqConfiguration()
+    def get_groq_config(self):
+        return self

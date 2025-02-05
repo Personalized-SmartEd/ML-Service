@@ -1,8 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
-
-from src.LLMs.deepseek_integration import GroqConfiguration, get_groq_config
+from fastapi import APIRouter
 from src.Models.recommendation_engine import StudentProfile, StudyPlanRecommendation
-from src.Services.reccomendation_engine import GroqRecommendationEngine, RecommendationEngineService
+from src.Services.reccomendation_engine import RecommendationEngineService
 
 router = APIRouter(
     prefix="/reccomend",
