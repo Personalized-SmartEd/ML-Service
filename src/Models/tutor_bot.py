@@ -20,3 +20,4 @@ class TutorSessionResponse(BaseModel):
     updated_chat_history: List[ChatMessage]
     follow_up_questions: List[str]
     key_points: List[str]
+    docs: dict

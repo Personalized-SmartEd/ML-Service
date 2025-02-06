@@ -42,7 +42,8 @@ class TutorBotService:
             explanation=response['explanation'],
             updated_chat_history=updated_history,
             key_points = response['key_points'] or '',
-            follow_up_questions = response['follow_up_questions'] 
+            follow_up_questions = response['follow_up_questions'],
+            docs= self.docs
         )
 
     def _construct_prompt(self, request: TutorSessionRequest) -> str:
