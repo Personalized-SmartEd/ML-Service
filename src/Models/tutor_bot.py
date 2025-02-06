@@ -18,3 +18,5 @@ class TutorSessionRequest(BaseModel):
 class TutorSessionResponse(BaseModel):
     explanation: str
     updated_chat_history: List[ChatMessage]
+    follow_up_questions: List[str]
+    key_points: List[str]

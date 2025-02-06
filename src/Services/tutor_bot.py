@@ -1,12 +1,8 @@
-import chromadb
-from fastapi import HTTPException
+from src.Utils.find_docs import find_pdf
 from src.Models.tutor_bot import TutorSessionRequest, TutorSessionResponse
 from src.LLMs.gemini_integration import GeminiClient
-from src.Models.static_assessment import SubjectType
-from typing import Optional
 import os
 
-CHROMA_DB_PATH = './tmp/data'
 
 class TutorBotService:
     def __init__(self):
@@ -19,17 +15,16 @@ class TutorBotService:
                     "type": "array",
                     "items": {"type": "string"}
                 },
-                "follow_up_question": {"type": "string"}
+                "follow_up_questions": {"type": "array", "items":{"type" : "string"}}
             },
-            "required": ["explanation"]
+            "required": ["explanation", 'follow_up_question']
         }
-        self.chroma_client = chromadb.PersistentClient(path=CHROMA_DB_PATH)
-        self.docs = ''
+        self.docs = None
         
 
     async def generate_tutor_response(self, request: TutorSessionRequest) -> TutorSessionResponse:
-        # extract relevant docs from the vector db
-        self.load_docs(student_class=request.student.student_class, student_subject=request.subject.subject.value, query=request.new_message)
+        # Extract relevant docs from the vector db
+        self.docs = find_pdf(student_class=request.student.student_class, subject=request.subject.subject.value, chapter = request.subject.chapter, query=request.new_message)
 
         # Construct the prompt with full context
         prompt = self._construct_prompt(request)
@@ -45,7 +40,9 @@ class TutorBotService:
         
         return TutorSessionResponse(
             explanation=response['explanation'],
-            updated_chat_history=updated_history
+            updated_chat_history=updated_history,
+            key_points = response['key_points'] or '',
+            follow_up_questions = response['follow_up_questions'] 
         )
 
     def _construct_prompt(self, request: TutorSessionRequest) -> str:
@@ -104,13 +101,6 @@ class TutorBotService:
     def get_available_classes_subjects(self):
         return self.chroma_client.list_collections()
 
-    def load_docs(self, student_class:int, student_subject:str, query: str):
-        if student_class  < 6 or 8 < student_class:
-            raise HTTPException(status_code=303, detail='Can only handle class between 6 to 8')
-        # print('DEBUG : ',os.listdir(path=CHROMA_DB_PATH), self.chroma_client.list_collections())
-        book_name = 'Class-'+str(student_class) + '_'+student_subject
-        book = self.chroma_client.get_collection(name=book_name)
-        self.docs = book.query(query_texts=[query], n_results=3)
 
 
 
