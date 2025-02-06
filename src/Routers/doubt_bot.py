@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 
 from src.Models.doubt_bot import DoubtBotRequest, DoubtBotResponse
-from src.Services.doubt_bot import DoubtBotService
+from src.Services.doubt_bot import  DoubtSolver
 
 
 router = APIRouter(
     prefix="/doubt",
     tags=['Doubt bot']
 )
-service = DoubtBotService()
+service = DoubtSolver()
 
-@router.post("/ask", response_model=DoubtBotResponse)
-async def ask_doubt(request: DoubtBotRequest):
-    return await service.solve_doubt(request)
+@router.post("/ask")
+async def ask_doubt(request: DoubtBotRequest) -> DoubtBotResponse:
+    return await service.doubt_solver(request)

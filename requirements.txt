@@ -12,3 +12,7 @@ langchain_community
 langchain_text_splitters
 chromadb
 pypdf
+
+# for notebooks and testing
+ipykernel
+pip

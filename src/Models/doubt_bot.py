@@ -19,7 +19,5 @@ class DoubtBotRequest(BaseModel):
 
 class DoubtBotResponse(BaseModel):
     explanation: str
-    follow_up_questions: List[str] = []
-    # if image solution
-    image_url: Optional[HttpUrl] = None
-    image_description: Optional[HttpUrl] = None
+    keypoints: List[str]
+    follow_up_questions: List[str]
