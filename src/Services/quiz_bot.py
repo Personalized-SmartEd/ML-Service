@@ -15,7 +15,6 @@ class QuizBotService:
             chapter=request.subject_info.chapter,
             query=request.subject_info.topic_description
         )
-        course_context  = course_context['documents']
 
         # Construct enhanced prompt
         prompt = self._construct_prompt(request, course_context)

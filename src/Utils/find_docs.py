@@ -12,4 +12,4 @@ def find_pdf(student_class:int, subject:str, chapter: str, query: str):
     book = chroma_client.get_collection(name=book_name)
     docs = book.query(query_texts=[query, chapter], n_results=3)
 
-    return docs
+    return docs['documents']
