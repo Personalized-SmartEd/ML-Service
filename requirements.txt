@@ -3,9 +3,16 @@ fastapi[standard]
 pydantic
 python-dotenv
 
-# ml
+# llms
 google-generativeai
 groq
+
+# ml
+joblib
+pandas
+xgboost
+scikit-learn
+numpy
 
 # vector db
 langchain_community

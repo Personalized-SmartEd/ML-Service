@@ -1,8 +1,9 @@
+import ast
 from typing import List
 from fastapi import HTTPException
-from pydantic import BaseModel
-from requests import HTTPError
-
+import joblib
+import numpy as np
+import pandas as pd
 from src.LLMs.gemini_integration import GeminiClient
 from src.Models.static_assessment import AssessmentResult, LearningStyleResult, LearningStyleType, PastScoresModel, PerformanceLevel, Trend
 from src.Models.dynamic_assessment import QuizResponseModel, QuizSubmission, VARKQuestion
@@ -127,30 +128,57 @@ class InitialAssessmentService:
 
 
 class DynamicAssessmentService:
+    def __init__(self):
+        self.average_score_model = joblib.load('./src/Weights/predicted_performance_level_model.pkl')
+        self.performance_level_model = joblib.load('./src/Weights/current_performance_level_model.pkl')
+        self.trend_model = joblib.load('./src/Weights/trend_model.pkl')
+        self.scaler = joblib.load('./src/Weights/scaler.pkl')
+
     def calculate_performance(self,scores_data: PastScoresModel) -> AssessmentResult:
         """Calculate performance metrics based on historical scores"""
         subject = scores_data.subject
         scores = scores_data.scores
-        average = sum(scores) / len(scores)
-        
-        # Determine performance level
-        if average < 50:
-            level = PerformanceLevel.BEGINNER
-        elif 50 <= average < 75:
-            level = PerformanceLevel.INTERMEDIATE
-        else:
-            level = PerformanceLevel.ADVANCED
 
-        # Calculate trend (simple linear regression)
-        trend = Trend.STABLE
-        if len(scores) >= 2:
-            first_half = sum(scores[:len(scores)//2]) / (len(scores)//2)
-            second_half = sum(scores[len(scores)//2:]) / (len(scores)//2)
-            trend = Trend.IMPROVING if second_half > first_half else Trend.DECLINING if second_half < first_half else Trend.STABLE
+        average, level, trend = self.xgb_evaluation(scores=scores)
 
         return AssessmentResult(
             subject=subject,
             performance_level=level,
-            average_score=round(average, 2),
+            average_score=average,
             trend=trend
         )
+    
+    def extract_features(self, row):
+        scores = row['score_history']
+        if isinstance(scores, (int, float)):
+            scores = [float(scores)]
+        elif isinstance(scores, str):
+            try:
+                scores = ast.literal_eval(scores) if '[' in scores else [float(scores)]
+            except (ValueError, SyntaxError):
+                return [0, 0, 0]
+        scores = [float(s) for s in scores if isinstance(s, (int, float)) or str(s).replace('.', '', 1).isdigit()]
+        if not scores:
+            return [0, 0, 0]
+        return [np.mean(scores), np.var(scores), np.std(scores)]
+
+    def xgb_evaluation(self, scores):
+        sample_data = pd.DataFrame({
+            'score_history': [scores]
+        })
+
+        # preprocessing
+        sample_data[['mean_score', 'variance', 'std_dev']] = sample_data.apply(self.extract_features, axis=1, result_type='expand')
+        X_sample = sample_data[['mean_score', 'variance', 'std_dev']]
+        X_sample_scaled = self.scaler.transform(X_sample)
+
+        # prediction
+        avg_score_pred = self.average_score_model.predict(X_sample_scaled)
+        perf_pred = self.performance_level_model.predict(X_sample_scaled)
+        trend_pred = self.trend_model.predict(X_sample_scaled)
+
+        perf_enum = {0:PerformanceLevel.ADVANCED, 1:PerformanceLevel.INTERMEDIATE, 2:PerformanceLevel.BEGINNER}
+        trend_enum = {0:Trend.IMPROVING, 1:Trend.DECLINING, 2:Trend.STABLE}
+
+        return avg_score_pred, perf_enum[perf_pred[0]], trend_enum[trend_pred[0]]
+         
