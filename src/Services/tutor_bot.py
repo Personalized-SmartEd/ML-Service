@@ -99,8 +99,6 @@ class TutorBotService:
         
         return updated_history
 
-    def get_available_classes_subjects(self):
-        return self.chroma_client.list_collections()
 
 
 
