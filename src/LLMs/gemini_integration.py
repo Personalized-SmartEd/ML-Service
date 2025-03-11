@@ -9,7 +9,7 @@ import asyncio
 from dotenv import load_dotenv
 
 from src.Models.dynamic_assessment import Quiz
-load_dotenv('../.env')
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 GEMINI_API_KEY =   os.getenv('GEMINI_API_KEY')
