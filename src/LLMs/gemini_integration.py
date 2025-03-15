@@ -20,7 +20,7 @@ class GeminiClient:
         if not GEMINI_API_KEY:
             raise ValueError("Gemini API key is required")
         genai.configure(api_key=GEMINI_API_KEY)
-        self.text_model = genai.GenerativeModel('gemini-pro')
+        self.text_model = genai.GenerativeModel('gemini-1.5-pro')
         self.embedding_model = 'models/embedding-001'
 
     def generate_quiz(self, prompt: str) -> Dict[str, Any]:

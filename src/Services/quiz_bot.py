@@ -18,7 +18,7 @@ class QuizBotService:
 
         # Construct enhanced prompt
         prompt = self._construct_prompt(request, course_context)
-        print('DEBUG : ', prompt)
+        # print('DEBUG : ', prompt)
 
         # Generate structured quiz questions
         questions = await self.quiz_bot.generate_structured_data(
@@ -47,48 +47,44 @@ class QuizBotService:
         return self._create_response(questions['items'])
 
     def _construct_prompt(self, request: QuizRequestBody, context: str) -> str:
-        """Builds an optimized prompt for generating a subject-specific and unique quiz"""
-        
+        """Build context-aware quiz generation prompt"""
         return f"""
-        Act as an expert quiz creator specializing in {request.subject_info.subject.value}. Your task is to generate a unique, subject-specific multiple-choice quiz based on the provided topic. Ensure that:
+        Act as an expert quiz generator for {request.subject_info.subject.value} students. Consider these parameters:
         
-        **Student Profile:**
+        Student Profile:
         - Class/Grade: {request.student_info.student_class}
         - Academic Performance: {request.student_info.student_performance_from_1_to_100}%
         - Learning Style: {request.student_info.student_learning_style.value}
-        - Preferred Difficulty Level: {request.student_info.student_performance_level.value}
+        - Preferred Difficulty: {request.student_info.student_performance_level.value}
 
-        **Subject:** {request.subject_info.subject.value}  
-        **Chapter:** {request.subject_info.chapter}  
-        **Topic:** {request.subject_info.topic_description}  
+        Chapter: {request.subject_info.chapter}
+        Topic: {request.subject_info.topic_description}
+        
+        Relevant Course Context:
+        {context}
 
-        ### Course Context: Generate based on the class 6 to 8 syllabus ncert books and the topic description generate specific to chapter and topic don't generate other than that
+        Generate multiple-choice questions that:
+        1. Assess understanding of key chapter concepts
+        2. Match the student's academic level and learning style
+        3. Include varying difficulty levels (basic recall to application)
+        4. Contain plausible distractors based on common misconceptions
 
-        ### Quiz Generation Guidelines:
-        1. Questions must be **unique**, well-structured, and directly related to the given topic.
-        2. Difficulty level should match the student's performance level and gradually increase.
-        3. Use **proper mathematical notation** (e.g., fractions as \\( \\frac{{a}}{{b}} \\), summations as \\( \\sum \\), and integrals as \\( \\int \\)).
-        4. Ensure that distractor options are plausible but incorrect.
-        5. Include a mix of conceptual, problem-solving, and application-based questions.
-        6. Avoid generic questions—focus on subject-specific depth.
+        Format Requirements:
+         - Number of questions : {request.quiz_info.number_of_questions}
+         - Question difficulty from 1 to 10 : {request.quiz_info.quiz_difficulty_from_1_to_10}
+         - Quiz duration in minutes : {request.quiz_info.quiz_duration_minutes}
 
-        ### Quiz Format:
-        - **Number of questions:** {request.quiz_info.number_of_questions}
-        - **Difficulty scale (1-10):** {request.quiz_info.quiz_difficulty_from_1_to_10}
-        - **Quiz duration:** {request.quiz_info.quiz_duration_minutes} minutes
-
-        ### Learning Style-Specific Adaptations:
+        Include these question types based on learning style:
         {self._get_question_types_instructions(request.student_info.student_learning_style.value)}
 
-        **Important:** Generate a high-quality, subject-accurate, and engaging quiz that truly assesses the student's grasp of the topic.
+        NOTE : Try to follow the provided context as closely as possible.
         """
-
 
     def _get_question_types_instructions(self, learning_style: VARKQuestion) -> str:
         """Get learning-style specific question instructions"""
         style_instructions = {
             "visual": "Include diagram-based questions and spatial relationships",
-            "auditory": "Focus on lecture-like scenarios and sound-related concepts",
+            "aural": "Focus on lecture-like scenarios and sound-related concepts",
             "read/write": "Emphasize text analysis and written responses",
             "kinesthetic": "Use real-world application scenarios and hands-on problems"
         }
