@@ -5,6 +5,7 @@ python-dotenv
 
 # llms
 google-generativeai
+google-genai
 groq
 
 # ml
