@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.Routers import assessment, quiz_bot, tutor_bot, doubt_bot, recommend
+from src.Routers import assessment, quiz_bot, tutor_bot, doubt_bot, recommend, v2
 
 app = FastAPI(title='SmartEd - ML Service', version='0.1.0')
 
@@ -12,3 +12,4 @@ app.include_router(tutor_bot.router)
 app.include_router(quiz_bot.router)
 app.include_router(doubt_bot.router)
 app.include_router(recommend.router)
+app.include_router(v2.router)

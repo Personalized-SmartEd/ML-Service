@@ -23,3 +23,8 @@ pypdf
 # for notebooks and testing
 ipykernel
 pip
+
+# for mindmap generation
+Pillow
+matplotlib
+pyshorteners
