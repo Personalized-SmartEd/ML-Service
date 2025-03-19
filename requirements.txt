@@ -15,6 +15,13 @@ xgboost
 scikit-learn
 numpy
 
+# video summarisation testing
+youtube_transcript_api
+SpeechRecognition
+pytube
+pytubefix
+moviepy
+
 # vector db
 langchain_community
 langchain_text_splitters
