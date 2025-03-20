@@ -23,7 +23,6 @@ class V2Service:
         response = client.models.generate_content(
         model="gemini-1.5-flash",
         contents=[sample_doc, prompt])
-        # print(response.text)
         return response.text
     
 
@@ -39,7 +38,6 @@ class V2Service:
                 ]
             )
         )
-        # print(response.text)
         return response.text
     
 
